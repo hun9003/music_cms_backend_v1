@@ -3,6 +3,7 @@ package com.music.music_cms_backend_v1.common.util;
 
 import com.music.music_cms_backend_v1.common.exception.InvalidParamException;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -124,19 +125,9 @@ public class HashGenerator {
     }
 
     // 비밀번호 암호화
-    public static String hashPassword(String email, String password) {
-        // 비밀번호 암호화 작업
-        String salt = HashGenerator.getSalt();
-        String hashPassword;
-        try {
-            String digst = salt+password.trim()+salt+email.trim()+salt+HashGenerator.sha1(email+password)+salt;
-            hashPassword = HashGenerator.sha1(salt+password+salt)
-                    +HashGenerator.sha256(digst);
-        } catch (NoSuchAlgorithmException e) {
-            throw new InvalidParamException("fail password security");
-        }
-
-        return hashPassword;
+    public static String passwordEncoder(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(password);
     }
 
     // 암호화된 코드 이메일 가져오기
